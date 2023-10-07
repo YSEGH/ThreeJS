@@ -4,7 +4,7 @@ import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 
 const SPHERE_RADIUS = 50;
-const NUM_POINTS = 14;
+const NUM_POINTS = 15;
 const CAMERA_DISTANCE = 200;
 
 export default class WordCloud {
@@ -20,15 +20,15 @@ export default class WordCloud {
     const height = window.innerHeight;
 
     this.scene = new THREE.Scene();
-
+    this.scene.background = new THREE.Color(0xffffff);
     this.camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
     this.camera.position.set(0, 0, CAMERA_DISTANCE);
 
     this.renderer = new THREE.WebGLRenderer();
     this.renderer.setSize(width, height);
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
-    this.controls.maxPolarAngle = 2.75;
-    this.controls.minPolarAngle = 0.35;
+    this.controls.maxPolarAngle = 2.5;
+    this.controls.minPolarAngle = 0.5;
 
     const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
     this.scene.add(ambientLight);
@@ -51,14 +51,12 @@ export default class WordCloud {
     this.animate();
   }
 
-  private randomIntFromInterval(min: number, max: number) {
-    // min and max included
-    return Math.floor(Math.random() * (max - min + 1) + min);
-  }
-
   private createMeshes() {
-    const sphereGeometry = new THREE.SphereGeometry(SPHERE_RADIUS, 16, 16);
-    const sphereMaterial = new THREE.MeshBasicMaterial({ wireframe: true });
+    const sphereGeometry = new THREE.SphereGeometry(8, 12, 12);
+    const sphereMaterial = new THREE.MeshBasicMaterial({
+      color: 0x000000,
+      wireframe: true,
+    });
     const sphereMesh = new THREE.Mesh(sphereGeometry, sphereMaterial);
     this.scene.add(sphereMesh);
 
@@ -99,7 +97,10 @@ export default class WordCloud {
         });
 
         const material = [
-          new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true }),
+          new THREE.MeshBasicMaterial({
+            color: 0x000000,
+            transparent: true,
+          }),
         ];
 
         const mesh = new THREE.Mesh(geometry, material);
@@ -155,10 +156,26 @@ export default class WordCloud {
     return points;
   }
 
+  private updateOpacity() {
+    const cameraDirection = new THREE.Vector3();
+    this.camera.getWorldDirection(cameraDirection);
+
+    this.meshes.forEach((mesh) => {
+      const meshDirection = mesh.position.clone().normalize();
+
+      const dotProduct = cameraDirection.dot(meshDirection);
+      const opacity = Math.max(0, dotProduct); // Minimum opacity is 0
+
+      (mesh.material as THREE.MeshBasicMaterial[])[0].opacity = 1 - opacity;
+    });
+  }
+
   private animate() {
     this.meshes.forEach((mesh) => {
       mesh.lookAt(this.camera.position);
     });
+
+    this.updateOpacity();
 
     requestAnimationFrame(this.animate.bind(this));
     this.controls.update();

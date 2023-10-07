@@ -17,6 +17,7 @@ const index = () => {
     "Javascript",
     "VueJS",
     "Sass",
+    "Strapi",
   ];
 
   useEffect(() => {
