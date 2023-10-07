@@ -1,0 +1,105 @@
+import * as THREE from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
+import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
+
+const SPHERE_RADIUS = 150;
+const NUM_POINTS = 20;
+const CAMERA_DISTANCE = 400;
+
+export default class WordCloud {
+  private scene: THREE.Scene;
+  private camera: THREE.PerspectiveCamera;
+  private renderer: THREE.WebGLRenderer;
+  private controls: OrbitControls;
+  private words: string[];
+  private meshes: THREE.Mesh[];
+
+  constructor(words: string[]) {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    this.scene = new THREE.Scene();
+
+    this.camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+    this.camera.position.set(0, 0, CAMERA_DISTANCE);
+
+    this.renderer = new THREE.WebGLRenderer();
+    this.renderer.setSize(width, height);
+    this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    this.scene.add(ambientLight);
+
+    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+    directionalLight.position.set(0, 1, 1).normalize();
+    this.scene.add(directionalLight);
+
+    this.words = words;
+    this.meshes = [];
+    this.createMeshes();
+  }
+
+  init(containerId: string) {
+    const container = document.getElementById(containerId);
+    if (container) {
+      container.appendChild(this.renderer.domElement);
+    }
+    window.addEventListener("resize", this.onWindowResize.bind(this), false);
+    this.animate();
+  }
+
+  private createMeshes() {
+    const sphereGeometry = new THREE.SphereGeometry(SPHERE_RADIUS, 32, 32);
+    const points = sphereGeometry.getAttribute("position");
+
+    for (let i = 0; i < NUM_POINTS; i++) {
+      const point = points[i % points.length];
+
+      const loader = new FontLoader();
+
+      loader.load("/fonts/helvetiker_regular.typeface.json", (font) => {
+        const geometry = new TextGeometry(this.words[i], {
+          font: font,
+          size: 5,
+          height: 1,
+          curveSegments: 12,
+          bevelEnabled: true,
+          bevelThickness: 10,
+          bevelSize: 8,
+          bevelOffset: 0,
+          bevelSegments: 5,
+        });
+
+        const material = [
+          new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true }),
+        ];
+
+        const mesh = new THREE.Mesh(geometry, material);
+        mesh.position.copy(point);
+        this.meshes.push(mesh);
+        this.scene.add(mesh);
+      });
+    }
+  }
+
+  private animate() {
+    this.meshes.forEach((mesh) => {
+      mesh.lookAt(this.camera.position);
+    });
+
+    requestAnimationFrame(this.animate.bind(this));
+    this.controls.update();
+    this.renderer.render(this.scene, this.camera);
+  }
+
+  private onWindowResize() {
+    const width = window.innerWidth;
+    const height = window.innerHeight;
+
+    this.camera.aspect = width / height;
+    this.camera.updateProjectionMatrix();
+
+    this.renderer.setSize(width, height);
+  }
+}

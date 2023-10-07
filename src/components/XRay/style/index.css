@@ -1,0 +1,71 @@
+.wrapper {
+  position: relative;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+.container__text {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.hero {
+  height: 100%;
+  width: 100%;
+}
+.hero__heading {
+  margin: 0;
+  height: 140px;
+  font-size: 140px;
+  font-family: "Oswald", sans-serif;
+  text-transform: uppercase;
+  font-weight: 300;
+  user-select: none;
+  overflow: hidden;
+}
+.hero__heading .text--blue {
+  color: #546ef3;
+}
+.translate_to_top {
+  display: block;
+  transform: translateY(100%);
+}
+
+.hero--primary,
+.hero--secondary {
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.hero--primary .hero__heading {
+  color: #fff;
+}
+.hero--secondary .hero__heading {
+  color: #1c1c1c;
+}
+.hero--secondary {
+  --x: 50%;
+  --y: 50%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: #fff;
+  --mask: radial-gradient(
+    circle at var(--x, 50%) var(--y, 50%),
+    black var(--maskSize1, 0%),
+    rgba(0, 0, 0, 0.1) calc(var(--maskSize1, 0%) + 0.1%),
+    transparent 0,
+    transparent var(--maskSize2, 0%),
+    rgba(0, 0, 0, 0.1) calc(var(--maskSize2, 0%) + 0.1%),
+    black var(--maskSize2, 0%),
+    rgba(0, 0, 0, 0.1) calc(var(--maskSize3, 0%) - 0.1%),
+    black var(--maskSize3, 0%),
+    rgba(0, 0, 0, 0.1) calc(var(--maskSize3, 0%) + 0.1%),
+    transparent 0
+  );
+  -webkit-mask-image: var(--mask);
+  mask-image: var(--mask);
+}
