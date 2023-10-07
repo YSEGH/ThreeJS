@@ -7,26 +7,40 @@ const SPHERE_RADIUS = 50;
 const NUM_POINTS = 15;
 const CAMERA_DISTANCE = 200;
 
-export default class WordCloud {
+export type Tag = {
+  id: number;
+  name: string;
+  rate: number;
+};
+
+export default class TagCloud {
   private scene: THREE.Scene;
   private camera: THREE.PerspectiveCamera;
   private renderer: THREE.WebGLRenderer;
   private controls: OrbitControls;
-  private words: string[];
+  private tags: Tag[];
   private meshes: THREE.Mesh[];
+  private hoverMesh: THREE.Mesh | null = null;
+  private clickMesh: THREE.Mesh | null = null;
+  private containerId: string;
+  private callback: Function;
+  private mDown: boolean = false;
+  private mDragging: boolean = false;
 
-  constructor(words: string[]) {
+  constructor(containerId: string, tags: Tag[], callback: Function) {
     const width = window.innerWidth;
     const height = window.innerHeight;
-
+    this.containerId = containerId;
+    this.callback = callback;
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0xffffff);
     this.camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
     this.camera.position.set(0, 0, CAMERA_DISTANCE);
 
-    this.renderer = new THREE.WebGLRenderer();
+    this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setSize(width, height);
     this.controls = new OrbitControls(this.camera, this.renderer.domElement);
+    this.controls.enableZoom = false;
     this.controls.maxPolarAngle = 2.5;
     this.controls.minPolarAngle = 0.5;
 
@@ -37,28 +51,126 @@ export default class WordCloud {
     directionalLight.position.set(0, 1, 1).normalize();
     this.scene.add(directionalLight);
 
-    this.words = words;
+    this.tags = tags;
     this.meshes = [];
     this.createMeshes();
   }
 
-  init(containerId: string) {
-    const container = document.getElementById(containerId);
+  init() {
+    const container = document.getElementById(this.containerId);
     if (container) {
       container.appendChild(this.renderer.domElement);
     }
     window.addEventListener("resize", this.onWindowResize.bind(this), false);
+    window.addEventListener("mousemove", (event) => this.setupMeshHover(event));
+    window.addEventListener("mousedown", () => {
+      this.mDown = true;
+    });
+    window.addEventListener("mouseup", (event: MouseEvent) => {
+      if (this.mDragging === false) {
+        this.onMeshClick(event);
+      }
+      this.mDown = false;
+      this.mDragging = false;
+    });
     this.animate();
   }
 
+  private onMeshClick(event: MouseEvent) {
+    const mouse = new THREE.Vector2(
+      (event.clientX / window.innerWidth) * 2 - 1,
+      -(event.clientY / window.innerHeight) * 2 + 1
+    );
+
+    const raycaster = new THREE.Raycaster();
+    raycaster.setFromCamera(mouse, this.camera);
+
+    const intersects = raycaster.intersectObjects(this.meshes, true);
+
+    if (intersects.length > 0) {
+      const clickedMesh = intersects[0].object as THREE.Mesh;
+
+      if (this.clickMesh && clickedMesh !== this.clickMesh) {
+        this.handleMeshActive(this.clickMesh, false);
+      }
+
+      this.clickMesh = clickedMesh;
+      this.handleMeshActive(this.clickMesh, true);
+      (clickedMesh.material as THREE.MeshBasicMaterial[])[0].color.setHex(
+        0xff0000
+      );
+      this.callback(clickedMesh.name);
+    } else {
+      if (this.clickMesh) {
+        this.handleMeshActive(this.clickMesh, false);
+        this.clickMesh = null;
+        this.callback(null);
+      }
+    }
+  }
+
+  private handleMeshActive(mesh: THREE.Mesh, isActive: boolean) {
+    const material = mesh.material as THREE.MeshBasicMaterial[];
+    material[0].color.setHex(isActive ? 0xff0000 : 0x000000);
+  }
+
+  private setCursor(isActive: boolean) {
+    document.getElementById(this.containerId)!.style.cursor = isActive
+      ? "pointer"
+      : "auto";
+  }
+
+  private setupMeshHover(event: MouseEvent) {
+    if (this.mDown) {
+      this.mDragging = true;
+    }
+    const mouse = new THREE.Vector2(
+      (event.clientX / window.innerWidth) * 2 - 1,
+      -(event.clientY / window.innerHeight) * 2 + 1
+    );
+
+    const raycaster = new THREE.Raycaster();
+    raycaster.setFromCamera(mouse, this.camera);
+
+    const intersects = raycaster.intersectObjects(this.meshes, true);
+
+    if (intersects.length > 0) {
+      // Hovered on a mesh
+      const hoverMesh = intersects[0].object as THREE.Mesh;
+      if (hoverMesh !== this.clickMesh) {
+        this.setCursor(true);
+      } else {
+        this.setCursor(false);
+      }
+      if (hoverMesh !== this.hoverMesh) {
+        // Reset the previous hoverMesh color
+        if (this.hoverMesh && this.hoverMesh !== this.clickMesh) {
+          this.handleMeshActive(this.hoverMesh, false);
+        }
+
+        // Set the new hoverMesh and change its color
+
+        this.hoverMesh = hoverMesh;
+        this.handleMeshActive(this.hoverMesh, true);
+      }
+    } else {
+      // No hover, reset the color of the previous hoverMesh
+      if (this.hoverMesh && this.hoverMesh !== this.clickMesh) {
+        this.handleMeshActive(this.hoverMesh, false);
+        this.hoverMesh = null;
+      }
+      this.setCursor(false);
+    }
+  }
+
   private createMeshes() {
-    const sphereGeometry = new THREE.SphereGeometry(8, 12, 12);
+    /* const sphereGeometry = new THREE.SphereGeometry(8, 12, 12);
     const sphereMaterial = new THREE.MeshBasicMaterial({
       color: 0x000000,
       wireframe: true,
     });
     const sphereMesh = new THREE.Mesh(sphereGeometry, sphereMaterial);
-    this.scene.add(sphereMesh);
+    this.scene.add(sphereMesh); */
 
     const points = this.calculateSphericalPoints(SPHERE_RADIUS, NUM_POINTS);
 
@@ -84,14 +196,14 @@ export default class WordCloud {
       const loader = new FontLoader();
 
       loader.load("/fonts/helvetiker_regular.typeface.json", (font) => {
-        const geometry = new TextGeometry(this.words[i], {
+        const geometry = new TextGeometry(this.tags[i].name, {
           font: font,
           size: 5,
           height: 1,
           curveSegments: 12,
           bevelEnabled: true,
           bevelThickness: 10,
-          bevelSize: 8,
+          bevelSize: 4,
           bevelOffset: 0,
           bevelSegments: 5,
         });
@@ -108,6 +220,7 @@ export default class WordCloud {
         mesh.position.copy(point!);
         mesh.geometry.computeBoundingBox();
         mesh.geometry.translate(-mesh.geometry.boundingBox!.max.x / 2.5, 0, 0);
+        mesh.name = this.tags[i].name;
         this.meshes.push(mesh);
         this.scene.add(mesh);
       });
@@ -178,6 +291,7 @@ export default class WordCloud {
     this.updateOpacity();
 
     requestAnimationFrame(this.animate.bind(this));
+
     this.controls.update();
     this.renderer.render(this.scene, this.camera);
   }
