@@ -19,6 +19,7 @@ export default class TagCloud {
   private renderer: THREE.WebGLRenderer;
   private controls: OrbitControls;
   private tags: Tag[];
+  private currentTag: string | null = null;
   private meshes: THREE.Mesh[];
   private hoverMesh: THREE.Mesh | null = null;
   private clickMesh: THREE.Mesh | null = null;
@@ -99,12 +100,14 @@ export default class TagCloud {
       (clickedMesh.material as THREE.MeshBasicMaterial[])[0].color.setHex(
         0xff0000
       );
-      this.callback(clickedMesh.name);
+      this.callback(clickedMesh.name, this.currentTag);
+      this.currentTag = clickedMesh.name;
     } else {
       if (this.clickMesh) {
         this.handleMeshActive(this.clickMesh, false);
         this.clickMesh = null;
-        this.callback(null);
+        this.callback(null, this.currentTag);
+        this.currentTag = null;
       }
     }
   }

@@ -1,0 +1,6 @@
+.component__rate {
+  --star-size: 2rem;
+  width: calc(5 * var(--star-size));
+  height: var(--star-size);
+  display: flex;
+}

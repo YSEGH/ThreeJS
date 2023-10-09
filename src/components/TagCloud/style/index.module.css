@@ -1,8 +1,11 @@
+.container__tag_cloud {
+  position: relative;
+}
 .container__rate {
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 0;
+  bottom: 2rem;
   margin: auto;
   width: fit-content;
   height: fit-content;

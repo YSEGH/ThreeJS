@@ -1,0 +1,24 @@
+.star__container {
+  --star-size: 2rem;
+  position: relative;
+  background-color: #e2e2e2;
+  width: var(--star-size);
+  height: var(--star-size);
+  mask-size: var(--star-size);
+  -webkit-mask-size: var(--star-size);
+  mask-repeat: no-repeat;
+  -webkit-mask-repeat: no-repeat;
+}
+.star__bg {
+  width: 0%;
+  height: 100%;
+  background-color: red;
+  transition: 0.25s;
+}
+.star {
+  width: 100%;
+  height: 100%;
+}
+.star path {
+  fill: transparent;
+}
