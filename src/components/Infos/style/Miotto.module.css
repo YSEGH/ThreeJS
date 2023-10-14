@@ -15,7 +15,19 @@
   align-items: center;
   justify-content: center;
   text-align: center;
+  padding: 1rem;
 }
 .miotto__inner h2 {
   margin: 0;
+  font-family: FHTotal;
+  font-size: 50px;
+  font-weight: 200;
+  text-transform: capitalize;
+  text-align: center;
+}
+.bold {
+  font-weight: 700;
+}
+.italic {
+  font-style: italic;
 }

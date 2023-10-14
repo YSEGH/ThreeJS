@@ -10,6 +10,10 @@
   border: none;
   border-radius: 0;
   cursor: pointer;
+  font-family: FHTotal;
+  font-size: 60px;
+  font-weight: 700;
+  text-transform: uppercase;
 }
 .sendmail button:focus {
   outline: none;

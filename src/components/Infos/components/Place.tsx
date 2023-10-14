@@ -1,5 +1,6 @@
 import React from "react";
 import style from "../style/Place.module.css";
+import cx from "classnames";
 
 const Place: React.FC = () => {
   return (
@@ -10,7 +11,7 @@ const Place: React.FC = () => {
           Genis <br />
           Pouilly <br />
           01630, <br />
-          <span className={style.bold}>France</span>
+          <span className={cx(style.bold, style.italic)}>France</span>
         </h2>
       </div>
       <div className={style.map}>Map</div>

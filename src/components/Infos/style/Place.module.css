@@ -7,12 +7,32 @@
   justify-content: center;
   border-top: 5px solid #000;
   border-right: 5px solid #000;
+  gap: 1rem;
+  padding: 1rem;
 }
 .place h2 {
   color: #000;
 }
 .address,
 .map {
+  border-radius: 10px;
+  height: 100%;
   flex: 1 1 50%;
   background-color: #ededed;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.address h2 {
+  font-family: FHTotal;
+  font-size: 40px;
+  font-weight: 100;
+  text-transform: uppercase;
+  text-align: center;
+}
+.bold {
+  font-weight: 700;
+}
+.italic {
+  font-style: italic;
 }

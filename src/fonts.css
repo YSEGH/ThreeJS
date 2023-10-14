@@ -5,7 +5,6 @@
     format("opentype");
   font-weight: 100;
 }
-
 @font-face {
   font-family: FHTotal;
   src: url("./fonts/FH_TotalDisplay/FHTotalDisplay-Test-ThinItalic-BF6514dd5b18f2e.otf")
@@ -13,35 +12,30 @@
   font-weight: 100;
   font-style: italic;
 }
-
 @font-face {
   font-family: FHTotal;
   font-weight: 200;
   src: url("./fonts/FH_TotalDisplay/FHTotalDisplay-Test-Light-BF6514dd5b2b64b.otf")
     format("opentype");
 }
-
 @font-face {
   font-family: FHTotal;
   src: url("./fonts/FH_TotalDisplay/FHTotalDisplay-Test-Regular-BF6514dd5b34b98.otf")
     format("opentype");
   font-weight: 300;
 }
-
 @font-face {
   font-family: FHTotal;
   font-weight: 400;
   src: url("./fonts/FH_TotalDisplay/FHTotalDisplay-Test-Medium-BF6514dd5ae34c2.otf")
     format("opentype");
 }
-
 @font-face {
   font-family: FHTotal;
   src: url("./fonts/FH_TotalDisplay/FHTotalDisplay-Test-SemiBold-BF6514dd5b27c56.otf")
     format("opentype");
   font-weight: 500;
 }
-
 @font-face {
   font-family: FHTotal;
   font-weight: 600;
@@ -54,6 +48,13 @@
   src: url("./fonts/FH_TotalDisplay/FHTotalDisplay-Test-Black-BF6514dd5b2001e.otf")
     format("opentype");
 }
+@font-face {
+  font-family: FHTotal;
+  font-weight: 700;
+  src: url("./fonts/FH_TotalDisplay/FHTotalDisplay-Test-BlackItalic-BF6514dd5b18743.otf")
+    format("opentype");
+  font-style: italic;
+}
 
 /* Poligon */
 @font-face {
@@ -61,31 +62,26 @@
   src: url("./fonts/poligon/Poligon_Thin.otf") format("opentype");
   font-weight: 100;
 }
-
 @font-face {
   font-family: Poligon;
   font-weight: 200;
   src: url("./fonts/poligon/Poligon_Light.otf") format("opentype");
 }
-
 @font-face {
   font-family: Poligon;
   src: url("./fonts/poligon/Poligon_Regular.otf") format("opentype");
   font-weight: 300;
 }
-
 @font-face {
   font-family: Poligon;
   font-weight: 400;
   src: url("./fonts/poligon/Poligon_Medium.otf") format("opentype");
 }
-
 @font-face {
   font-family: Poligon;
   src: url("./fonts/poligon/Poligon_SemiBold.otf") format("opentype");
   font-weight: 500;
 }
-
 @font-face {
   font-family: Poligon;
   font-weight: 600;
