@@ -1,6 +1,20 @@
-.component__rate {
+.rate__component {
+  position: relative;
   --star-size: 2rem;
+  -webkit-mask-repeat: repeat-x;
+  mask-repeat: repeat-x;
+  -webkit-mask-size: var(--star-size);
+  mask-size: var(--star-size);
   width: calc(5 * var(--star-size));
   height: var(--star-size);
-  display: flex;
+  background-color: rgb(222, 222, 222);
+}
+.rate__bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #ffe247;
+  transition: 0.25s;
 }

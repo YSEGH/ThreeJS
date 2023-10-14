@@ -3,9 +3,11 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry.js";
 import { FontLoader } from "three/examples/jsm/loaders/FontLoader.js";
 
-const SPHERE_RADIUS = 50;
-const NUM_POINTS = 15;
-const CAMERA_DISTANCE = 200;
+const SPHERE_RADIUS = 65;
+const NUM_POINTS = 21;
+const CAMERA_DISTANCE = 250;
+const FONT = "/fonts/poligon_light_regular.json";
+const FONT_SIZE = 8;
 
 export type Tag = {
   id: number;
@@ -19,7 +21,6 @@ export default class TagCloud {
   private renderer: THREE.WebGLRenderer;
   private controls: OrbitControls;
   private tags: Tag[];
-  private currentTag: string | null = null;
   private meshes: THREE.Mesh[];
   private hoverMesh: THREE.Mesh | null = null;
   private clickMesh: THREE.Mesh | null = null;
@@ -27,6 +28,7 @@ export default class TagCloud {
   private callback: Function;
   private mDown: boolean = false;
   private mDragging: boolean = false;
+  private lastScrollPosition: number = window.scrollY;
 
   constructor(containerId: string, tags: Tag[], callback: Function) {
     const width = window.innerWidth;
@@ -35,7 +37,8 @@ export default class TagCloud {
     this.callback = callback;
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color(0xffffff);
-    this.camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+
+    this.camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 10000);
     this.camera.position.set(0, 0, CAMERA_DISTANCE);
 
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -63,7 +66,7 @@ export default class TagCloud {
       container.appendChild(this.renderer.domElement);
     }
     window.addEventListener("resize", this.onWindowResize.bind(this), false);
-    window.addEventListener("mousemove", (event) => this.setupMeshHover(event));
+    /*     window.addEventListener("mousemove", (event) => this.setupMeshHover(event));
     window.addEventListener("mousedown", () => {
       this.mDown = true;
     });
@@ -73,8 +76,36 @@ export default class TagCloud {
       }
       this.mDown = false;
       this.mDragging = false;
-    });
+    }); */
+    window.addEventListener("scroll", (event) => this.handleScroll(event));
+
     this.animate();
+  }
+
+  private handleScroll = (event: Event) => {
+    const currentScrollPosition = window.scrollY;
+
+    if (currentScrollPosition > this.lastScrollPosition) {
+      // Scroll vers le bas
+      this.updateCamera("bottom");
+    } else if (currentScrollPosition < this.lastScrollPosition) {
+      // Scroll vers le haut
+      this.updateCamera("top");
+    }
+
+    // Mettez à jour la dernière position du scroll
+    this.lastScrollPosition = currentScrollPosition;
+  };
+
+  private updateCamera(to: string) {
+    switch (to) {
+      case "top":
+        this.camera.position.y += 0.5;
+        break;
+      default:
+        this.camera.position.y -= 0.5;
+        break;
+    }
   }
 
   private onMeshClick(event: MouseEvent) {
@@ -100,14 +131,12 @@ export default class TagCloud {
       (clickedMesh.material as THREE.MeshBasicMaterial[])[0].color.setHex(
         0xff0000
       );
-      this.callback(clickedMesh.name, this.currentTag);
-      this.currentTag = clickedMesh.name;
+      this.callback(clickedMesh.name);
     } else {
       if (this.clickMesh) {
         this.handleMeshActive(this.clickMesh, false);
         this.clickMesh = null;
-        this.callback(null, this.currentTag);
-        this.currentTag = null;
+        this.callback(null);
       }
     }
   }
@@ -167,9 +196,9 @@ export default class TagCloud {
   }
 
   private createMeshes() {
-    /* const sphereGeometry = new THREE.SphereGeometry(8, 12, 12);
+    /*     const sphereGeometry = new THREE.SphereGeometry(50, 32, 16);
     const sphereMaterial = new THREE.MeshBasicMaterial({
-      color: 0x000000,
+      color: 0x2c2c2c,
       wireframe: true,
     });
     const sphereMesh = new THREE.Mesh(sphereGeometry, sphereMaterial);
@@ -198,12 +227,12 @@ export default class TagCloud {
 
       const loader = new FontLoader();
 
-      loader.load("/fonts/helvetiker_regular.typeface.json", (font) => {
+      loader.load(FONT, (font) => {
         const geometry = new TextGeometry(this.tags[i].name, {
           font: font,
-          size: 5,
+          size: FONT_SIZE,
           height: 1,
-          curveSegments: 12,
+          curveSegments: 20,
           bevelEnabled: true,
           bevelThickness: 10,
           bevelSize: 4,

@@ -1,0 +1,6 @@
+@import url("./fonts.css");
+
+* {
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+}

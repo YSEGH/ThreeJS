@@ -1,0 +1,21 @@
+.banner {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #fff;
+}
+.banner h1 {
+  margin: 0;
+  font-family: FHTotal;
+  font-size: 140px;
+  color: #000;
+  font-weight: 600;
+}
+
+@media screen and (max-width: 768px) {
+  .banner h1 {
+    font-size: 90px;
+  }
+}

@@ -1,0 +1,72 @@
+.testimony__item {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.testimony__item img {
+  height: 75px;
+  width: 75px;
+  min-height: 75px;
+  min-width: 75px;
+  border-radius: 100%;
+  object-fit: cover;
+}
+
+.testimony__content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: 1rem;
+}
+
+.testimony {
+  margin: 0;
+  font-family: Poligon;
+  font-size: 28px;
+  line-height: 38px;
+  font-weight: 200;
+  color: #000;
+}
+
+.author {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 2rem;
+  color: #000;
+}
+
+.author__name {
+  margin: 0;
+  font-family: Poligon;
+  font-size: 18px;
+  font-weight: 300;
+  position: relative;
+  line-height: 18px;
+  color: #000;
+}
+.author__name::before {
+  --size: 6px;
+  content: "";
+  height: var(--size);
+  width: var(--size);
+  background-color: #000;
+  border-radius: 100%;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: calc(-1rem - var(--size) / 2);
+  margin: auto;
+  color: #000;
+}
+.author__job {
+  margin: 0;
+  font-family: Poligon;
+  font-size: 18px;
+  font-weight: 200;
+  line-height: 18px;
+  color: #000;
+}
