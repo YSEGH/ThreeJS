@@ -15,6 +15,15 @@ const fields = [
   {
     blockName: "text",
     blockType: "text",
+    id: "JIDSQ99",
+    label: "Enterprise",
+    name: "enterprise",
+    required: false,
+    width: 100,
+  },
+  {
+    blockName: "text",
+    blockType: "text",
     id: "JIDSQ95",
     label: "Address Email",
     name: "email",

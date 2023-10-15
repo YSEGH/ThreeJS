@@ -35,3 +35,22 @@
 .carousel__item:hover img {
   transform: scale(1.1);
 }
+
+.title {
+  pointer-events: none;
+  position: absolute;
+  bottom: 1rem;
+  left: 1rem;
+  z-index: 10;
+  width: 600px;
+  color: #fff;
+}
+
+.title h1 {
+  margin: 0;
+  transform: translateY(100px);
+}
+
+.title h1 .char {
+  opacity: 0;
+}
